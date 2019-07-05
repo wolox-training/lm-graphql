@@ -1,7 +1,7 @@
 const request = require('request-promise'),
   logger = require('../logger'),
   typicodePath = 'https://jsonplaceholder.typicode.com',
-  { apiError, notFoundError } = require('../errors');
+  { apiError } = require('../errors');
 
 const options = endpoint => ({
   uri: endpoint,
@@ -32,9 +32,6 @@ exports.getAlbumById = albumId => {
       return album;
     })
     .catch(error => {
-      if (error.statusCode === 404) {
-        throw notFoundError('Album not found');
-      }
       throw apiError(error.message);
     });
 };
