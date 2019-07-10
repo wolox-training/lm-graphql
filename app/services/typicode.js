@@ -1,13 +1,21 @@
 const request = require('request-promise'),
   logger = require('../logger'),
   typicodePath = 'https://jsonplaceholder.typicode.com',
-  { apiError } = require('../errors');
+  { apiError } = require('../errors'),
+  lodash = require('lodash');
 
 const options = endpoint => ({
   uri: endpoint,
   json: true,
   resolveWithFullResponse: false
 });
+
+const mapPhotos = (album, photos) => {
+  album.photos = photos.map(photo => ({
+    url: photo.url,
+    thumbnailUrl: photo.thumbnailUrl
+  }));
+};
 
 const requestAlbumPhotos = albumId => {
   logger.info(`Requesting album -with id ${albumId}- photos to jsonplaceholder API`);
@@ -25,10 +33,7 @@ exports.getAlbumById = albumId => {
       return requestAlbumPhotos(albumId);
     })
     .then(photos => {
-      album.photos = photos.map(photo => ({
-        url: photo.url,
-        thumbnailUrl: photo.thumbnailUrl
-      }));
+      mapPhotos(album, photos);
       return album;
     })
     .catch(error => {
@@ -37,22 +42,18 @@ exports.getAlbumById = albumId => {
 };
 
 exports.getAlbums = (offset, limit, orderedBy) => {
-  logger.info('Requesting albums');
+  logger.info('Requesting albums and photos');
   let albums = {};
-
-  return request(options(`${typicodePath}/albums`))
+  let photos = {};
+  return request(options(`${typicodePath}/photos`))
+    .then(foundPhotos => lodash.groupBy(foundPhotos, 'albumId'))
+    .then(groupedPhotos => {
+      photos = groupedPhotos;
+      return request(options(`${typicodePath}/albums`));
+    })
     .then(foundAlbums => {
       albums = foundAlbums;
-      return Promise.all(
-        albums.map(album =>
-          requestAlbumPhotos(album.id).then(photos => {
-            album.photos = photos.map(photo => ({
-              url: photo.url,
-              thumbnailUrl: photo.thumbnailUrl
-            }));
-          })
-        )
-      );
+      return Promise.all(albums.map(album => mapPhotos(album, photos[album.id])));
     })
     .then(() =>
       albums
