@@ -4,12 +4,12 @@ const { gql } = require('apollo-server'),
 module.exports = {
   queries: {
     album: (_, params) => getAlbumById(params.id),
-    albums: () => getAlbums()
+    albums: (_, params) => getAlbums(params.offset, params.limit, params.orderBy)
   },
   schema: gql`
     extend type Query {
       album(id: ID!): Album
-      albums: [Album]
+      albums(offset: Int!, limit: Int!, orderBy: String!): [Album]
     }
   `
 };
