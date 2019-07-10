@@ -41,7 +41,7 @@ exports.getAlbumById = albumId => {
     });
 };
 
-exports.getAlbums = (offset, limit, orderedBy) => {
+exports.getAlbums = (offset, limit, orderedBy, filter) => {
   logger.info('Requesting albums and photos');
   let albums = {};
   let photos = {};
@@ -49,17 +49,24 @@ exports.getAlbums = (offset, limit, orderedBy) => {
     .then(foundPhotos => lodash.groupBy(foundPhotos, 'albumId'))
     .then(groupedPhotos => {
       photos = groupedPhotos;
+      if (filter) {
+        return request(options(`${typicodePath}/albums?title=${filter.split(' ').join('%20')}`));
+      }
+
       return request(options(`${typicodePath}/albums`));
     })
     .then(foundAlbums => {
       albums = foundAlbums;
       return Promise.all(albums.map(album => mapPhotos(album, photos[album.id])));
     })
-    .then(() =>
-      albums
-        .slice(offset, offset + limit)
-        .sort((album1, album2) => (album1[orderedBy] >= album2[orderedBy] ? 1 : -1))
-    )
+    .then(() => {
+      if (offset && limit && orderedBy) {
+        return albums
+          .slice(offset, offset + limit)
+          .sort((album1, album2) => (album1[orderedBy] >= album2[orderedBy] ? 1 : -1));
+      }
+      return albums;
+    })
     .catch(error => {
       throw apiError(error.message);
     });
