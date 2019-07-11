@@ -9,7 +9,7 @@ const options = endpoint => ({
   resolveWithFullResponse: false
 });
 
-const mapPhotos = (album, photos) =>
+const mapPhotos = photos =>
   photos.map(photo => ({
     url: photo.url,
     thumbnailUrl: photo.thumbnailUrl
