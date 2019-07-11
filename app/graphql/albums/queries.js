@@ -15,9 +15,14 @@ const getAlbum = albumId =>
     })
   );
 
-const getAllAlbums = (offset, limit, orderedBy) =>
-  getAlbums()
-    .then(foundAlbums => foundAlbums.slice(offset, offset + limit))
+const getAllAlbums = (offset, limit, orderedBy, filterBy = null) =>
+  new Promise(resolve => {
+    if (filterBy) {
+      resolve(getAlbumsWithTitle(filterBy));
+    }
+    resolve(getAlbums());
+  })
+    .then(albums => albums.slice(offset, offset + limit))
     .then(albumsSliced =>
       Promise.all(
         albumsSliced.map(album =>
@@ -27,7 +32,9 @@ const getAllAlbums = (offset, limit, orderedBy) =>
         )
       ).then(() => albumsSliced)
     )
-    .then(albums => albums.sort((album1, album2) => (album1[orderedBy] >= album2[orderedBy] ? 1 : -1)));
+    .then(albumsSliced =>
+      albumsSliced.sort((album1, album2) => (album1[orderedBy] >= album2[orderedBy] ? 1 : -1))
+    );
 
 const getAllAlbumsfiltered = filter =>
   getAlbumsWithTitle(filter).then(albums =>
@@ -43,13 +50,13 @@ const getAllAlbumsfiltered = filter =>
 module.exports = {
   queries: {
     album: (_, params) => getAlbum(params.id),
-    albums: (_, params) => getAllAlbums(params.offset, params.limit, params.orderBy),
+    albums: (_, params) => getAllAlbums(params.offset, params.limit, params.orderBy, params.filterBy),
     albumsFiltered: (_, params) => getAllAlbumsfiltered(params.filter)
   },
   schema: gql`
     extend type Query {
       album(id: ID!): Album
-      albums(offset: Int!, limit: Int!, orderBy: String!): [Album]
+      albums(offset: Int!, limit: Int!, orderBy: String!, filterBy: String): [Album]
       albumsFiltered(filter: String!): [Album]
     }
   `
