@@ -43,7 +43,7 @@ const getAllAlbumsfiltered = filter =>
 module.exports = {
   queries: {
     album: (_, params) => getAlbum(params.id),
-    albums: (_, params) => getAllAlbums(params.offset, params.limit, params.orderBy, null),
+    albums: (_, params) => getAllAlbums(params.offset, params.limit, params.orderBy),
     albumsFiltered: (_, params) => getAllAlbumsfiltered(params.filter)
   },
   schema: gql`

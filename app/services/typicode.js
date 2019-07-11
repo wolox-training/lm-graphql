@@ -33,7 +33,7 @@ exports.getAlbums = () => {
 
 exports.getAlbumsWithTitle = title => {
   logger.info(`Requesting albums with title = ${title}`);
-  return request(options(`${typicodePath}/albums`)).catch(error => {
+  return request(options(`${typicodePath}/albums?title=${title.split(' ').join('%20')}`)).catch(error => {
     throw apiError(error.message);
   });
 };
