@@ -31,9 +31,9 @@ exports.getAlbums = () => {
   });
 };
 
-exports.getAlbumsWithTitle = title => {
-  logger.info(`Requesting albums with title = ${title}`);
-  return request(options(`${typicodePath}/albums?title=${title.split(' ').join('%20')}`)).catch(error => {
+exports.getAlbumsFiltered = filterBy => {
+  logger.info(`Requesting albums with title = ${filterBy}`);
+  return request(options(`${typicodePath}/albums?title=${filterBy.split(' ').join('%20')}`)).catch(error => {
     throw apiError(error.message);
   });
 };

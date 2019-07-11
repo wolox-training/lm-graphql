@@ -1,4 +1,4 @@
-const { getAlbumById, requestAlbumPhotos, getAlbums } = require('../../services/typicode'),
+const { getAlbumById, requestAlbumPhotos, getAlbums, getAlbumsFiltered } = require('../../services/typicode'),
   logger = require('../../logger');
 
 exports.album = albumId =>
@@ -6,11 +6,13 @@ exports.album = albumId =>
     ...album
   }));
 
-exports.albums = (offset, limit, orderBy) => {
+exports.albums = (offset, limit, orderBy, filterBy) => {
   logger.info('Requesting albums');
 
-  return getAlbums()
-    .then(foundAlbums => foundAlbums.slice(offset, offset + limit))
+  return new Promise(resolve => {
+    resolve(filterBy ? getAlbumsFiltered(filterBy) : getAlbums());
+  })
+    .then(albums => albums.slice(offset, offset + limit))
     .then(albumsSliced =>
       albumsSliced.map(album => ({
         ...album
