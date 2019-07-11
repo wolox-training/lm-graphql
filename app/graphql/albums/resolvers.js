@@ -1,10 +1,12 @@
 const { getAlbumById, requestAlbumPhotos, getAlbums, getAlbumsFiltered } = require('../../services/typicode'),
   logger = require('../../logger');
 
-exports.album = albumId =>
-  getAlbumById(albumId).then(album => ({
+exports.album = albumId => {
+  logger.info(`Requesting album with id ${albumId}`);
+  return getAlbumById(albumId).then(album => ({
     ...album
   }));
+};
 
 exports.albums = (offset, limit, orderBy, filterBy) => {
   logger.info('Requesting albums');
