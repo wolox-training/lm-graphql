@@ -9,13 +9,7 @@ const options = endpoint => ({
   resolveWithFullResponse: false
 });
 
-const mapPhotos = photos =>
-  photos.map(photo => ({
-    url: photo.url,
-    thumbnailUrl: photo.thumbnailUrl
-  }));
-
-const requestAlbumPhotos = albumId => {
+exports.requestAlbumPhotos = albumId => {
   logger.info(`Requesting album -with id ${albumId}- photos to jsonplaceholder API`);
   return request(options(`${typicodePath}/photos?albumId=${albumId}`)).catch(error => {
     throw apiError(error.message);
@@ -24,37 +18,15 @@ const requestAlbumPhotos = albumId => {
 
 exports.getAlbumById = albumId => {
   logger.info(`Requesting album with id ${albumId}`);
-  let album = {};
-  return request(options(`${typicodePath}/albums/${albumId}`))
-    .then(foundAlbum => {
-      album = foundAlbum;
-      return requestAlbumPhotos(albumId);
-    })
-    .then(photos => {
-      album.photos = mapPhotos(photos);
-      return album;
-    })
-    .catch(error => {
-      throw apiError(error.message);
-    });
+  return request(options(`${typicodePath}/albums/${albumId}`)).catch(error => {
+    throw apiError(error.message);
+  });
 };
 
-exports.getAlbums = (offset, limit, orderedBy) => {
+exports.getAlbums = () => {
   logger.info('Requesting albums');
 
-  return request(options(`${typicodePath}/albums`))
-    .then(foundAlbums => foundAlbums.slice(offset, offset + limit))
-    .then(albumsSliced =>
-      Promise.all(
-        albumsSliced.map(album =>
-          requestAlbumPhotos(album.id).then(photos => {
-            album.photos = mapPhotos(photos);
-          })
-        )
-      ).then(() => albumsSliced)
-    )
-    .then(albums => albums.sort((album1, album2) => (album1[orderedBy] >= album2[orderedBy] ? 1 : -1)))
-    .catch(error => {
-      throw apiError(error.message);
-    });
+  return request(options(`${typicodePath}/albums`)).catch(error => {
+    throw apiError(error.message);
+  });
 };
