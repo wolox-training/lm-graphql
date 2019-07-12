@@ -35,9 +35,8 @@ module.exports = (sequelize, DataTypes) => {
 
   User.prototype.updateModel = props => this.update(props);
 
-  User.createUser = user => {
-    console.log(user);
-    return User.findOrCreate({
+  User.createUser = user =>
+    User.findOrCreate({
       where: { email: user.email },
 
       defaults: {
@@ -46,7 +45,6 @@ module.exports = (sequelize, DataTypes) => {
         password: user.password
       }
     });
-  };
 
   return User;
 };
