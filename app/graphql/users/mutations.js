@@ -1,10 +1,34 @@
 const { gql } = require('apollo-server'),
   { userLoggedIn } = require('../events'),
-  { user: User } = require('../../models');
+  { user: User } = require('../../models'),
+  logger = require('../../logger'),
+  { hashPassword } = require('../../helpers/hasher'),
+  { dbError } = require('../../errors');
 
 module.exports = {
   mutations: {
-    createUser: (_, { user }) => User.createModel(user),
+    createUser: (_, { user }) =>
+      hashPassword(user.password)
+        .then(hashedPassword =>
+          User.createUser({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: hashedPassword
+          })
+        )
+        .then(([createdUser, created]) => {
+          if (created) {
+            logger.info(`User ${createdUser.firstName} created`);
+            return createdUser;
+          }
+          logger.info('User with that email already exists');
+          return null;
+        })
+        .catch(error => {
+          throw dbError(error.message);
+        }),
+
     login: (_, { credentials }) => {
       // IMPORTANT: Not a functional login, its just for illustrative purposes
       userLoggedIn.publish(credentials.username);
@@ -17,7 +41,7 @@ module.exports = {
   },
   schema: gql`
     extend type Mutation {
-      createUser(user: UserInput!): User!
+      createUser(user: UserInput!): User
       login(credentials: LoginInput!): AccessToken
     }
   `

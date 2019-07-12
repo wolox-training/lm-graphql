@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      username: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       email: {
         type: DataTypes.STRING,
         allowNull: false
@@ -38,6 +34,19 @@ module.exports = (sequelize, DataTypes) => {
   User.getByUsername = username => User.getOne({ username });
 
   User.prototype.updateModel = props => this.update(props);
+
+  User.createUser = user => {
+    console.log(user);
+    return User.findOrCreate({
+      where: { email: user.email },
+
+      defaults: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: user.password
+      }
+    });
+  };
 
   return User;
 };
