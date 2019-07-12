@@ -3,7 +3,7 @@ const { gql } = require('apollo-server'),
   { user: User } = require('../../models'),
   logger = require('../../logger'),
   { hashPassword } = require('../../helpers/hasher'),
-  { dbError } = require('../../errors');
+  { dbError, validationError } = require('../../errors');
 
 module.exports = {
   mutations: {
@@ -22,8 +22,7 @@ module.exports = {
             logger.info(`User ${createdUser.firstName} created`);
             return createdUser;
           }
-          logger.info('User with that email already exists');
-          return null;
+          throw validationError('User with that email already exists');
         })
         .catch(error => {
           throw dbError(error.message);
