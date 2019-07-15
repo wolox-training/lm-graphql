@@ -7,6 +7,7 @@ module.exports = gql`
   type User {
     firstName: String!
     lastName: String!
+    username: String! @deprecated(reason: "Change on User model.")
     email: String!
     password: String!
     id: ID!
