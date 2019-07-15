@@ -1,15 +1,15 @@
 const { gql } = require('apollo-server'),
-  { getAlbum, getAllAlbums } = require('./resolvers');
+  { album, albums } = require('./resolvers');
 
 module.exports = {
   queries: {
-    album: (_, params) => getAlbum(params.id),
-    albums: (_, params) => getAllAlbums(params.offset, params.limit, params.orderBy)
+    album: (_, params) => album(params.id),
+    albums: (_, params) => albums(params.offset, params.limit, params.orderBy, params.filterBy)
   },
   schema: gql`
     extend type Query {
       album(id: ID!): Album
-      albums(offset: Int!, limit: Int!, orderBy: String!): [Album]
+      albums(offset: Int!, limit: Int!, orderBy: String!, filterBy: String): [Album]
     }
   `
 };
