@@ -23,11 +23,11 @@ exports.albums = (offset, limit, orderBy, filterBy) => {
     .then(albums => albums.sort((album1, album2) => (album1[orderBy] >= album2[orderBy] ? 1 : -1)));
 };
 
-exports.photos = album => {
+const photos = album => {
   logger.info(`Requesting photos of album with id ${album.id}`);
   return requestAlbumPhotos(album.id);
 };
 
 exports.typeResolvers = {
-  photos: exports.photos
+  photos
 };
