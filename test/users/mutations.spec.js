@@ -14,7 +14,6 @@ describe('users', () => {
           expect(email).toEqual(user.email);
           expect(id).toBeDefined();
           return comparePasswords(user.password, password).then(result => {
-            console.log(result);
             expect(result).toBe(true);
           });
         })
