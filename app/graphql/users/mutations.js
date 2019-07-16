@@ -1,15 +1,11 @@
 const { gql } = require('apollo-server'),
   { userLoggedIn } = require('../events'),
-  { createNewUser } = require('./resolvers'),
+  { createUser } = require('./resolvers'),
   { validateUser } = require('./validation');
-// { user: User } = require('../../models');
 
 module.exports = {
   mutations: {
-    createUser: (_, { user }) =>
-      validateUser(user)
-        .then(() => createNewUser(user))
-        .then(foundUser => foundUser),
+    createUser: (_, { user }) => validateUser(user).then(() => createUser(user)),
 
     login: (_, { credentials }) => {
       // IMPORTANT: Not a functional login, its just for illustrative purposes

@@ -1,4 +1,4 @@
-// const { dbError } = require('../errors');
+const { dbError } = require('../errors');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
@@ -46,6 +46,8 @@ module.exports = (sequelize, DataTypes) => {
         lastName: user.lastName,
         password: user.password
       }
+    }).catch(error => {
+      throw dbError(error.message);
     });
 
   return User;

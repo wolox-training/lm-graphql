@@ -3,10 +3,11 @@ const logger = require('../../logger'),
   { validationError } = require('../../errors'),
   { user: User } = require('../../models');
 
-exports.createNewUser = user =>
+exports.createUser = user =>
   hashPassword(user.password)
     .then(hashedPassword =>
       User.createUser({
+        id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,

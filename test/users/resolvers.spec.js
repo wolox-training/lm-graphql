@@ -7,7 +7,6 @@ describe('users', () => {
       it('should create an user successfuly', async () => {
         const user = await userFactory.build();
         return mutations.createUser({}, { user: user.dataValues }).then(res => {
-          console.log('aca');
           expect(res.dataValues).toHaveProperty('id');
           expect(res.dataValues).toHaveProperty('firstName');
           expect(res.dataValues).toHaveProperty('lastName');
@@ -18,11 +17,10 @@ describe('users', () => {
         });
       });
 
-      /* it('should fail to create an user with malformed parameters', () =>
+      it('should fail to create an user with malformed parameters', () =>
         mutations.createUser({}, { user: { a: 'b' } }).catch(err => {
-          expect(typeof err.errors).toBe('object');
-          expect(err.errors).toHaveLength();
-        }));*/
+          expect(err);
+        }));
     });
   });
 });
