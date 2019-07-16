@@ -26,3 +26,37 @@ exports.albumsPhotosListMock = (albumId, albumTitle) => {
       }
     ]);
 };
+
+exports.albumsFilteredListMock = albumTitle => {
+  nock('https://jsonplaceholder.typicode.com')
+    .get(`/albums?title=${albumTitle.split(' ').join('%20')}`)
+    .reply(200, [
+      {
+        userId: 1,
+        id: 1,
+        title: albumTitle
+      },
+      {
+        userId: 1,
+        id: 2,
+        title: albumTitle
+      }
+    ]);
+};
+
+exports.albumsListMock = albumTitle => {
+  nock('https://jsonplaceholder.typicode.com')
+    .get('/albums')
+    .reply(200, [
+      {
+        userId: 1,
+        id: 1,
+        title: albumTitle
+      },
+      {
+        userId: 1,
+        id: 2,
+        title: albumTitle
+      }
+    ]);
+};

@@ -12,4 +12,17 @@ query {
     }
   }`;
 
-module.exports = { album };
+const albums = (offset, limit, orderBy, filterBy = null) => gql`
+  query {
+    albums(offset:${offset},limit:${limit}, orderBy: "${orderBy}", filterBy:"${filterBy}") {
+      id
+      title
+      photos {
+        url
+        thumbnailUrl
+      }
+    }
+  }
+`;
+
+module.exports = { album, albums };
