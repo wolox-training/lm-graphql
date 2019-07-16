@@ -1,14 +1,14 @@
 const { factory } = require('factory-girl'),
   faker = require('faker'),
   models = require('../../app/models'),
+  alphanumericRegex = /^[0-9a-zA-Z]+$/,
   { user: User } = models;
 
 factory.define('user', User, {
   firstName: () => faker.name.firstName(),
   lastName: () => faker.name.lastName(),
-  email: () => faker.internet.email(),
-  username: () => faker.internet.email(),
-  password: () => faker.internet.password()
+  email: () => `${faker.name.lastName()}@wolox.com.ar`,
+  password: () => faker.internet.password(8, false, alphanumericRegex)
 });
 
 module.exports = {
