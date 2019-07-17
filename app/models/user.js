@@ -1,3 +1,5 @@
+const { dbError } = require('../errors');
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'user',
@@ -34,6 +36,19 @@ module.exports = (sequelize, DataTypes) => {
   User.getByUsername = username => User.getOne({ username });
 
   User.prototype.updateModel = props => this.update(props);
+
+  User.createUser = user =>
+    User.findOrCreate({
+      where: { email: user.email },
+
+      defaults: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: user.password
+      }
+    }).catch(error => {
+      throw dbError(error.message);
+    });
 
   return User;
 };
