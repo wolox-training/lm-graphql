@@ -42,7 +42,7 @@ describe('users', () => {
             expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
           }));
 
-      it('Create user with email with domain diferent from Wolox', () => {
+      it('Create user with email with domain diferent from Wolox', () =>
         mutate(
           createUser({
             firstName: user.firstName,
@@ -53,10 +53,9 @@ describe('users', () => {
         ).then(res => {
           testErrorResponse(res);
           expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
-        });
-      });
+        }));
 
-      it('Create user with email with short password', () => {
+      it('Create user with email with short password', () =>
         mutate(
           createUser({
             firstName: user.firstName,
@@ -67,10 +66,9 @@ describe('users', () => {
         ).then(res => {
           testErrorResponse(res);
           expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
-        });
-      });
+        }));
 
-      it('Create user with email with non-alphanumeric password', () => {
+      it('Create user with email with non-alphanumeric password', () =>
         mutate(
           createUser({
             firstName: user.firstName,
@@ -81,34 +79,27 @@ describe('users', () => {
         ).then(res => {
           testErrorResponse(res);
           expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
-        });
-      });
+        }));
 
-      describe('Test missing parameters', () => {
-        it('Create user without firstName', () =>
-          mutate(createUser({ lastName: user.lastName, email: user.email, password: user.password })).then(
-            res => testErrorResponse(res)
-          ));
+      it('Create user without firstName', () =>
+        mutate(createUser({ lastName: user.lastName, email: user.email, password: user.password })).then(
+          res => testErrorResponse(res)
+        ));
 
-        it('Create user without lastName', () =>
-          mutate(createUser({ firstName: user.firstName, email: user.email, password: user.password })).then(
-            res => testErrorResponse(res)
-          ));
+      it('Create user without lastName', () =>
+        mutate(createUser({ firstName: user.firstName, email: user.email, password: user.password })).then(
+          res => testErrorResponse(res)
+        ));
 
-        it('Create user without email', () =>
-          mutate(
-            createUser({ firstName: user.firstName, lastName: user.lastName, password: user.password })
-          ).then(res => testErrorResponse(res)));
+      it('Create user without email', () =>
+        mutate(
+          createUser({ firstName: user.firstName, lastName: user.lastName, password: user.password })
+        ).then(res => testErrorResponse(res)));
 
-        it('Create user without password', () =>
-          mutate(
-            createUser({
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email
-            })
-          ).then(res => testErrorResponse(res)));
-      });
+      it('Create user without password', () =>
+        mutate(createUser({ firstName: user.firstName, lastName: user.lastName, email: user.email })).then(
+          res => testErrorResponse(res)
+        ));
     });
   });
 });

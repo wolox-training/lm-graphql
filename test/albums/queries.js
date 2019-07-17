@@ -1,12 +1,13 @@
 const { query } = require('../server.spec'),
   { album, albums } = require('./graphql'),
-  {
+  /* {
     albumMock,
     albumsPhotosListMock,
     albumsFilteredListMock,
     albumsListMock,
     albumMockError
-  } = require('./mocking'),
+  } = require('./mocking'),*/
+  mocks = require('./mocking'),
   albumTitle = 'albumTitle',
   albumId1 = 1,
   albumId2 = 2,
@@ -34,8 +35,8 @@ describe('albums', () => {
   describe('queries', () => {
     describe('single-album', () => {
       beforeEach(() => {
-        albumMock(albumId1, albumTitle);
-        albumsPhotosListMock(albumId1, albumTitle);
+        mocks.albumMock(albumId1, albumTitle);
+        mocks.albumsPhotosListMock(albumId1, albumTitle);
       });
 
       it('should get album schema properly', () =>
@@ -55,13 +56,12 @@ describe('albums', () => {
 
     describe('multi-album', () => {
       beforeEach(() => {
-        albumsPhotosListMock(albumId1, albumTitle);
-        albumsPhotosListMock(albumId2, albumTitle);
+        mocks.albumsPhotosListMock(albumId1, albumTitle);
+        mocks.albumsPhotosListMock(albumId2, albumTitle);
       });
 
       it('should get albums with photos properly', () => {
-        albumsListMock(albumTitle);
-
+        mocks.albumsListMock(albumTitle);
         return query(albums(0, 3, 'id')).then(res => {
           expect(res.data.albums.length).toBe(albumsAmount);
           for (let i = 0; i < 2; i++) {
@@ -71,7 +71,7 @@ describe('albums', () => {
       });
 
       it('should get albums ordered', () => {
-        albumsListMock(albumTitle);
+        mocks.albumsListMock(albumTitle);
         return query(albums(0, 3, 'title')).then(res => {
           expect(res.data.albums.length).toBe(albumsAmount);
           expect(res.data.albums[0].title > res.data.albums[1].title);
@@ -79,7 +79,7 @@ describe('albums', () => {
       });
 
       it('should get albums filtered', () => {
-        albumsFilteredListMock(albumTitle);
+        mocks.albumsFilteredListMock(albumTitle);
         return query(albums(0, 3, 'title', albumTitle)).then(res => {
           expect(res.data.albums.length).toBe(albumsAmount);
           expect(res.data.albums[0].title).toBe(albumTitle);
@@ -103,9 +103,9 @@ describe('albums', () => {
         ));
 
       it('request albums without orderBy', () => {
-        albumsListMock('albumTitle');
-        albumsPhotosListMock(1, 'albumTitle');
-        albumsPhotosListMock(2, 'albumTitle');
+        mocks.albumsListMock('albumTitle');
+        mocks.albumsPhotosListMock(1, 'albumTitle');
+        mocks.albumsPhotosListMock(2, 'albumTitle');
         return query(albums(0, 3)).then(res => {
           expect(res.data.albums.length).toBe(2);
           for (let i = 0; i < 2; i++) {
@@ -115,14 +115,14 @@ describe('albums', () => {
       });
 
       it('request non-existent album', () => {
-        albumMockError(60000);
+        mocks.albumMockError(60000);
         return query(album(60000)).then(res => testErrorResponse(res, apiErrorStatusCode));
       });
 
       it('request albums without filterBy', () => {
-        albumsListMock('albumTitle');
-        albumsPhotosListMock(1, 'albumTitle');
-        albumsPhotosListMock(2, 'albumTitle');
+        mocks.albumsListMock('albumTitle');
+        mocks.albumsPhotosListMock(1, 'albumTitle');
+        mocks.albumsPhotosListMock(2, 'albumTitle');
         return query(albums(0, 3, 'id')).then(res => {
           expect(res.data.albums.length).toBe(2);
           for (let i = 0; i < 2; i++) {
