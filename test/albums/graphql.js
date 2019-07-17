@@ -14,7 +14,8 @@ query {
 
 const albums = (offset, limit, orderBy, filterBy = null) => gql`
   query {
-    albums(offset:${offset},limit:${limit}, orderBy: "${orderBy}", filterBy:"${filterBy}") {
+    albums(offset:${offset},limit:${limit}, 
+      orderBy: "${orderBy ? orderBy : ''}", filterBy:"${filterBy ? filterBy : ''}") {
       id
       title
       photos {
