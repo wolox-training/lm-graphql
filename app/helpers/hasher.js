@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt'),
+const bcrypt = require('bcryptjs'),
   { hashError } = require('../errors'),
   saltRounds = 10;
 
