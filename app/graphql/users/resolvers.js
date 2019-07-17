@@ -17,7 +17,24 @@ exports.createUser = user =>
     .then(([createdUser, created]) => {
       if (created) {
         logger.info(`User ${createdUser.firstName} created`);
+        createdUser.name = `${createdUser.firstName} ${createdUser.lastName}`;
         return createdUser;
       }
       throw validationError('User with that email already exists');
     });
+
+exports.getUser = user =>
+  User.getOne(user).then(foundUser => {
+    foundUser.name = `${foundUser.firstName} ${foundUser.lastName}`;
+    return foundUser;
+  });
+
+exports.getUsers = () =>
+  User.getAll()
+    .then(foundUsers =>
+      foundUsers.map(foundUser => ({
+        ...foundUser.dataValues,
+        name: `${foundUser.firstName} ${foundUser.lastName}`
+      }))
+    )
+    .then(users => users);
