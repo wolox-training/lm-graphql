@@ -1,12 +1,5 @@
 const { query } = require('../server.spec'),
   { album, albums } = require('./graphql'),
-  /* {
-    albumMock,
-    albumsPhotosListMock,
-    albumsFilteredListMock,
-    albumsListMock,
-    albumMockError
-  } = require('./mocking'),*/
   mocks = require('./mocking'),
   albumTitle = 'albumTitle',
   albumId1 = 1,
@@ -51,7 +44,7 @@ describe('albums', () => {
         }));
 
       it('should get album with photos properly', () =>
-        query(album(1)).then(res => testAlbumProperties(res.data.album, albumTitle, albumId1)));
+        query(album(albumId1)).then(res => testAlbumProperties(res.data.album, albumTitle, albumId1)));
     });
 
     describe('multi-album', () => {
@@ -89,6 +82,12 @@ describe('albums', () => {
     });
 
     describe('Requests with missing or non-existent parameters', () => {
+      beforeEach(() => {
+        mocks.albumsListMock('albumTitle');
+        mocks.albumsPhotosListMock(1, 'albumTitle');
+        mocks.albumsPhotosListMock(2, 'albumTitle');
+      });
+
       it('request album without id', () =>
         query(album()).then(res => testErrorResponse(res, 'GRAPHQL_VALIDATION_FAILED')));
 
@@ -102,34 +101,26 @@ describe('albums', () => {
           testErrorResponse(res, 'GRAPHQL_VALIDATION_FAILED')
         ));
 
-      it('request albums without orderBy', () => {
-        mocks.albumsListMock('albumTitle');
-        mocks.albumsPhotosListMock(1, 'albumTitle');
-        mocks.albumsPhotosListMock(2, 'albumTitle');
-        return query(albums(0, 3)).then(res => {
+      it('request albums without orderBy', () =>
+        query(albums(0, 3)).then(res => {
           expect(res.data.albums.length).toBe(2);
           for (let i = 0; i < 2; i++) {
             testAlbumProperties(res.data.albums[i], albumTitle, i + 1);
           }
-        });
-      });
+        }));
 
       it('request non-existent album', () => {
         mocks.albumMockError(60000);
         return query(album(60000)).then(res => testErrorResponse(res, apiErrorStatusCode));
       });
 
-      it('request albums without filterBy', () => {
-        mocks.albumsListMock('albumTitle');
-        mocks.albumsPhotosListMock(1, 'albumTitle');
-        mocks.albumsPhotosListMock(2, 'albumTitle');
-        return query(albums(0, 3, 'id')).then(res => {
+      it('request albums without filterBy', () =>
+        query(albums(0, 3, 'id')).then(res => {
           expect(res.data.albums.length).toBe(2);
           for (let i = 0; i < 2; i++) {
             testAlbumProperties(res.data.albums[i], albumTitle, i + 1);
           }
-        });
-      });
+        }));
     });
   });
 });
