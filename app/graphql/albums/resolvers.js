@@ -20,7 +20,12 @@ exports.albums = (offset, limit, orderBy, filterBy) => {
         ...album
       }))
     )
-    .then(albums => albums.sort((album1, album2) => (album1[orderBy] >= album2[orderBy] ? 1 : -1)));
+    .then(albums => {
+      if (orderBy) {
+        return albums.sort((album1, album2) => (album1[orderBy] >= album2[orderBy] ? 1 : -1));
+      }
+      return albums;
+    });
 };
 
 const photos = album => {

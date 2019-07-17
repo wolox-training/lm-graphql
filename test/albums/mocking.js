@@ -60,3 +60,9 @@ exports.albumsListMock = albumTitle => {
       }
     ]);
 };
+
+exports.albumMockError = albumId => {
+  nock('https://jsonplaceholder.typicode.com')
+    .get(`/albums/${albumId}`)
+    .reply(404, {});
+};
