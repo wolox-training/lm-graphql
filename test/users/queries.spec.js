@@ -11,7 +11,8 @@ describe('users', () => {
             user: {
               firstName: user.firstName,
               lastName: user.lastName,
-              email: user.email
+              email: user.email,
+              name: `${user.firstName} ${user.lastName}`
             }
           });
         })
@@ -33,5 +34,24 @@ describe('users', () => {
       query(getUsers()).then(res => {
         expect(res.data.users).toEqual([]);
       }));
+
+    it("check user's name", () =>
+      userFactory.create().then(user =>
+        query(getUser(user.id)).then(res => {
+          expect(res.data.user.name).toBe(`${res.data.user.firstName} ${res.data.user.lastName}`);
+        })
+      ));
+
+    it('Get users and check their names', () =>
+      userFactory.createMany(5).then(() =>
+        query(getUsers()).then(res => {
+          expect(res.data.users).toHaveLength(5);
+          for (let i = 0; i < 5; i++) {
+            expect(res.data.users[i].name).toBe(
+              `${res.data.users[i].firstName} ${res.data.users[i].lastName}`
+            );
+          }
+        })
+      ));
   });
 });
