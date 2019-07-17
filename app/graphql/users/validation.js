@@ -1,7 +1,6 @@
 const yup = require('yup'),
   { validationError } = require('../../errors'),
-  alphanumericRegex = /^[0-9a-zA-Z]+$/,
-  emailRegex = /.*@wolox.com.ar$/;
+  { alphanumericRegex, emailRegex } = require('../../helpers/constants');
 
 const userValidationSchema = yup.object().shape({
   password: yup
