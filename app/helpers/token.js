@@ -1,8 +1,9 @@
 const jsrasign = require('jsrsasign'),
-  config = require('../../config').common.token;
-// { tokenError } = require('../errors');
+  config = require('../../config').common.token,
+  logger = require('../logger');
 
 exports.createToken = sub => {
+  logger.info('Creating token');
   const header = { alg: config.algorithm, typ: config.type };
   const payload = {};
   payload.sub = sub;
