@@ -7,6 +7,6 @@ const createEvent = (eventId, publishFunction) => ({
 });
 
 const USER_LOGGED_IN = 'USER_LOGGED_IN';
-exports.userLoggedIn = createEvent(USER_LOGGED_IN, username => ({
-  onLogin: `${username} just logged in`
+exports.userLoggedIn = createEvent(USER_LOGGED_IN, email => ({
+  onLogin: `${email} just logged in`
 }));

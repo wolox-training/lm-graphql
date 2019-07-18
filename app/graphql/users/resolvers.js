@@ -1,7 +1,8 @@
 const logger = require('../../logger'),
   { hashPassword } = require('../../helpers/hasher'),
   { validationError } = require('../../errors'),
-  { user: User } = require('../../models');
+  { user: User } = require('../../models'),
+  { createToken } = require('../../helpers/token');
 
 exports.createUser = user =>
   hashPassword(user.password)
@@ -34,3 +35,8 @@ exports.getUsers = () =>
     .then(users => users);
 
 exports.getName = user => `${user.firstName} ${user.lastName}`;
+
+exports.signin = credentials => {
+  logger.info(`Signin for user with email ${credentials.email}`);
+  return createToken(credentials.email);
+};

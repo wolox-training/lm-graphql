@@ -1,6 +1,6 @@
 const { gql } = require('apollo-server'),
   { userLoggedIn } = require('../events'),
-  { createUser } = require('./resolvers'),
+  { createUser, signin } = require('./resolvers'),
   { validateUser } = require('./validation');
 
 module.exports = {
@@ -9,11 +9,10 @@ module.exports = {
 
     login: (_, { credentials }) => {
       // IMPORTANT: Not a functional login, its just for illustrative purposes
-      userLoggedIn.publish(credentials.username);
+      userLoggedIn.publish(credentials.email);
+      console.log(credentials);
       return {
-        accessToken: 'example_token',
-        refreshToken: 'example_refresh_token',
-        expiresIn: 134567899123
+        accessToken: signin(credentials)
       };
     }
   },
