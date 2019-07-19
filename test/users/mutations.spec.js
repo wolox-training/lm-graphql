@@ -1,9 +1,13 @@
 const { mutate } = require('../server.spec'),
-  { createUser } = require('./graphql'),
+  { createUser, login } = require('./graphql'),
   { comparePasswords } = require('../../app/helpers/hasher'),
   userFactory = require('../factories/user'),
+  { hashPassword } = require('../../app/helpers/hasher'),
   validationErrorStatus = 401,
+  incorrectEmail = 'email@wolox.com.ar',
+  correctEmail = 'useremail@wolox.com.ar',
   gmailEmail = 'email@gmail.com',
+  correctPassword = 'password',
   shortPassword = 'pass',
   passwordWithDots = 'p.a.s.s.w.o.r.d';
 
@@ -14,7 +18,7 @@ const testErrorResponse = response => {
 
 describe('users', () => {
   describe('mutations', () => {
-    describe('signup', () => {
+    describe('sign up', () => {
       let user = null;
       beforeEach(() =>
         userFactory.attributes().then(factoryUser => {
@@ -101,6 +105,31 @@ describe('users', () => {
         mutate(createUser({ firstName: user.firstName, lastName: user.lastName, email: user.email })).then(
           res => testErrorResponse(res)
         ));
+    });
+
+    describe('sign in', () => {
+      beforeEach(() =>
+        hashPassword(correctPassword).then(hashedPassword =>
+          userFactory.create({ email: correctEmail, password: hashedPassword })
+        )
+      );
+
+      it('sign in correctly and check token', () =>
+        mutate(login({ email: correctEmail, password: correctPassword })).then(res => {
+          expect(res.data.login.accessToken);
+        }));
+
+      it.each([
+        { email: gmailEmail, password: correctPassword },
+        { email: incorrectEmail, password: correctPassword },
+        { email: correctEmail, password: `${correctPassword}a` },
+        { email: correctEmail, password: shortPassword }
+      ])('Test invalid cases', credentials =>
+        mutate(login(credentials)).then(res => {
+          testErrorResponse(res);
+          expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
+        })
+      );
     });
   });
 });
