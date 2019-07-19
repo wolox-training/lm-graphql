@@ -50,6 +50,9 @@ const config = {
       algorithm: process.env.TOKEN_ALGORITHM,
       type: process.env.TOKEN_TYPE,
       pass: process.env.TOKEN_PASS
+    },
+    albumsApi: {
+      apiUrl: process.env.ALBUMS_API
     }
   }
 };

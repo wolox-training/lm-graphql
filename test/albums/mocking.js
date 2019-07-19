@@ -1,13 +1,14 @@
-const nock = require('nock');
+const nock = require('nock'),
+  { apiUrl } = require('../../config').common.albumsApi;
 
 exports.albumMock = (albumId, albumTitle) => {
-  nock('https://jsonplaceholder.typicode.com')
+  nock(apiUrl)
     .get(`/albums/${albumId}`)
     .reply(200, { userId: 1, id: albumId, title: albumTitle });
 };
 
 exports.albumsPhotosListMock = (albumId, albumTitle) => {
-  nock('https://jsonplaceholder.typicode.com')
+  nock(apiUrl)
     .get(`/photos?albumId=${albumId}`)
     .reply(200, [
       {
@@ -28,7 +29,7 @@ exports.albumsPhotosListMock = (albumId, albumTitle) => {
 };
 
 exports.albumsFilteredListMock = albumTitle => {
-  nock('https://jsonplaceholder.typicode.com')
+  nock(apiUrl)
     .get(`/albums?title=${albumTitle.split(' ').join('%20')}`)
     .reply(200, [
       {
@@ -45,7 +46,7 @@ exports.albumsFilteredListMock = albumTitle => {
 };
 
 exports.albumsListMock = albumTitle => {
-  nock('https://jsonplaceholder.typicode.com')
+  nock(apiUrl)
     .get('/albums')
     .reply(200, [
       {
@@ -62,7 +63,7 @@ exports.albumsListMock = albumTitle => {
 };
 
 exports.albumMockError = albumId => {
-  nock('https://jsonplaceholder.typicode.com')
+  nock(apiUrl)
     .get(`/albums/${albumId}`)
     .reply(404, {});
 };
