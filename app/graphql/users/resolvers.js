@@ -21,3 +21,16 @@ exports.createUser = user =>
       }
       throw validationError('User with that email already exists');
     });
+
+exports.getUser = user => User.getOne(user).then(foundUser => foundUser);
+
+exports.getUsers = () =>
+  User.getAll()
+    .then(foundUsers =>
+      foundUsers.map(foundUser => ({
+        ...foundUser.dataValues
+      }))
+    )
+    .then(users => users);
+
+exports.getName = user => `${user.firstName} ${user.lastName}`;

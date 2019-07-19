@@ -27,11 +27,12 @@ describe('users', () => {
 
       it('should create an user successfuly', () =>
         mutate(createUser(user)).then(res => {
-          const { firstName, lastName, email, password, id } = res.data.createUser;
+          const { firstName, lastName, email, password, id, name } = res.data.createUser;
           expect(firstName).toEqual(user.firstName);
           expect(lastName).toEqual(user.lastName);
           expect(email).toEqual(user.email);
           expect(id).toBeDefined();
+          expect(name).toBe(`${firstName} ${lastName}`);
           return comparePasswords(user.password, password).then(result => {
             expect(result).toBe(true);
           });
