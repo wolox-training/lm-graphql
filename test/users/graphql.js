@@ -26,7 +26,6 @@ const createUser = userInput => ({
         firstName
         lastName
         id
-        username
         password
         email
       }
