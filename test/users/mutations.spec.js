@@ -1,8 +1,11 @@
 const { mutate } = require('../server.spec'),
   { createUser } = require('./graphql'),
   { comparePasswords } = require('../../app/helpers/hasher'),
-  userFactory = require('../factories/user'),
   validationErrorStatus = 401,
+  correctFirstName = 'fn',
+  correctLastName = 'ln',
+  correctEmail = 'email@wolox.com.ar',
+  correctPassword = 'password',
   gmailEmail = 'email@gmail.com',
   shortPassword = 'pass',
   passwordWithDots = 'p.a.s.s.w.o.r.d';
@@ -15,12 +18,12 @@ const testErrorResponse = response => {
 describe('users', () => {
   describe('mutations', () => {
     describe('signup', () => {
-      let user = null;
-      beforeEach(() =>
-        userFactory.attributes().then(factoryUser => {
-          user = factoryUser;
-        })
-      );
+      const user = {
+        firstName: correctFirstName,
+        lastName: correctLastName,
+        email: correctEmail,
+        password: correctPassword
+      };
 
       it('should create an user successfuly', () =>
         mutate(createUser(user)).then(res => {
@@ -42,64 +45,25 @@ describe('users', () => {
             expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
           }));
 
-      it('Create user with email with domain diferent from Wolox', () =>
-        mutate(
-          createUser({
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: gmailEmail,
-            password: user.password
-          })
-        ).then(res => {
+      it.each([
+        { firstName: user.firstName, lastName: user.lastName, email: gmailEmail, password: user.password },
+        { firstName: user.firstName, lastName: user.lastName, email: user.email, password: shortPassword },
+        { firstName: user.firstName, lastName: user.lastName, email: user.email, password: passwordWithDots }
+      ])('Create user with invalid parameters', userData =>
+        mutate(createUser(userData)).then(res => {
           testErrorResponse(res);
           expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
-        }));
+        })
+      );
 
-      it('Create user with email with short password', () =>
-        mutate(
-          createUser({
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            password: shortPassword
-          })
-        ).then(res => {
-          testErrorResponse(res);
-          expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
-        }));
-
-      it('Create user with email with non-alphanumeric password', () =>
-        mutate(
-          createUser({
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            password: passwordWithDots
-          })
-        ).then(res => {
-          testErrorResponse(res);
-          expect(res.errors[0].extensions.code).toBe(validationErrorStatus);
-        }));
-
-      it('Create user without firstName', () =>
-        mutate(createUser({ lastName: user.lastName, email: user.email, password: user.password })).then(
-          res => testErrorResponse(res)
-        ));
-
-      it('Create user without lastName', () =>
-        mutate(createUser({ firstName: user.firstName, email: user.email, password: user.password })).then(
-          res => testErrorResponse(res)
-        ));
-
-      it('Create user without email', () =>
-        mutate(
-          createUser({ firstName: user.firstName, lastName: user.lastName, password: user.password })
-        ).then(res => testErrorResponse(res)));
-
-      it('Create user without password', () =>
-        mutate(createUser({ firstName: user.firstName, lastName: user.lastName, email: user.email })).then(
-          res => testErrorResponse(res)
-        ));
+      it.each([
+        { lastName: user.lastName, email: user.email, password: user.password },
+        { firstName: user.firstName, email: user.email, password: user.password },
+        { firstName: user.firstName, lastName: user.lastName, password: user.password },
+        { firstName: user.firstName, lastName: user.lastName, email: user.email }
+      ])('create user with missin parameters', userData =>
+        mutate(createUser(userData)).then(res => testErrorResponse(res))
+      );
     });
   });
 });
