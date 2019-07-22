@@ -32,12 +32,14 @@ exports.albums = (offset, limit, orderBy, filterBy) => {
 
 exports.createPurchase = (albumId, userId) => {
   logger.info(`Purchasing album with id ${albumId} for user with id ${userId}`);
-  return Purchase.createPurchase(albumId, userId).then(([purchase, created]) => {
-    if (created) {
-      return purchase.albumId;
-    }
-    throw validationError('User already bought that album');
-  });
+  return getAlbumById(albumId).then(() =>
+    Purchase.createPurchase(albumId, userId).then(([purchase, created]) => {
+      if (created) {
+        return purchase.albumId;
+      }
+      throw validationError('User already bought that album');
+    })
+  );
 };
 
 const photos = album => {

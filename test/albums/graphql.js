@@ -26,4 +26,21 @@ const albums = (offset, limit, orderBy = null, filterBy = null) => gql`
   }
 `;
 
-module.exports = { album, albums };
+const buyAlbum = (albumToBuy, token) => ({
+  mutation: gql`
+    mutation buyAlbum($albumToBuy: AlbumInput!) {
+      buyAlbum(albumToBuy: $albumToBuy) {
+        id
+        title
+      }
+    }
+  `,
+  variables: { albumToBuy },
+  options: {
+    context: {
+      headers: { token }
+    }
+  }
+});
+
+module.exports = { album, albums, buyAlbum };
