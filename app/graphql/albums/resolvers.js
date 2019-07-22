@@ -1,5 +1,7 @@
 const { getAlbumById, requestAlbumPhotos, getAlbums, getAlbumsFiltered } = require('../../services/typicode'),
-  logger = require('../../logger');
+  logger = require('../../logger'),
+  { purchase: Purchase } = require('../../models'),
+  { validationError } = require('../../errors');
 
 exports.album = albumId => {
   logger.info(`Requesting album with id ${albumId}`);
@@ -26,6 +28,16 @@ exports.albums = (offset, limit, orderBy, filterBy) => {
       }
       return albums;
     });
+};
+
+exports.createPurchase = (albumId, userId) => {
+  logger.info(`Purchasing album with id ${albumId} for user with id ${userId}`);
+  return Purchase.createPurchase(albumId, userId).then(([purchase, created]) => {
+    if (created) {
+      return purchase.albumId;
+    }
+    throw validationError('User already bought that album');
+  });
 };
 
 const photos = album => {

@@ -16,18 +16,9 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      deleted_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+      created_at: Sequelize.DATE,
+      updated_at: Sequelize.DATE,
+      deleted_at: Sequelize.DATE
     }),
   down: queryInterface => queryInterface.dropTable('purchases')
 };

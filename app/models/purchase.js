@@ -1,4 +1,5 @@
-'use strict';
+const { dbError } = require('../errors');
+
 module.exports = (sequelize, DataTypes) => {
   const Purchase = sequelize.define(
     'purchase',
@@ -17,8 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true
     }
   );
-  /* purchases.associate = function(models) {
-    // associations can be defined here
-  };*/
+
+  Purchase.createPurchase = (albumId, userId) =>
+    Purchase.findOrCreate({ where: { albumId, userId }, default: {} }).catch(error => {
+      throw dbError(error.message);
+    });
   return Purchase;
 };
