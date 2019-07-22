@@ -46,6 +46,11 @@ const config = {
       header_name: 'authorization',
       secret: process.env.NODE_API_SESSION_SECRET
     },
+    token: {
+      algorithm: process.env.TOKEN_ALGORITHM,
+      type: process.env.TOKEN_TYPE,
+      pass: process.env.TOKEN_PASS
+    },
     albumsApi: {
       apiUrl: process.env.ALBUMS_API
     }

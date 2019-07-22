@@ -35,6 +35,8 @@ module.exports = (sequelize, DataTypes) => {
 
   User.getByUsername = username => User.getOne({ username });
 
+  User.getByEmail = email => User.findOne({ where: { email } });
+
   User.prototype.updateModel = props => this.update(props);
 
   User.createUser = user =>
