@@ -35,8 +35,10 @@ const validateWithEmail = (token, email) =>
 
 const resolveValidation = validated => validated;
 
-exports.validateToken = token =>
-  getEmailFromToken(token)
+exports.validateToken = token => {
+  logger.info('Validating token');
+  return getEmailFromToken(token)
     .then(email => validateWithEmail(token, email))
     .then(validated => resolveValidation(validated))
     .catch(() => false);
+};
