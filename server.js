@@ -19,7 +19,7 @@ migrationsManager
       schema,
       context: ({ req }) => {
         const token = req.headers.token || '';
-        return validateToken(token).then(validated => ({ tokenValidated: validated }));
+        return validateToken(token).then(validated => ({ tokenValidated: validated, token }));
       }
     })
       .listen(port)

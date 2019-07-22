@@ -42,3 +42,5 @@ exports.validateToken = token => {
     .then(validated => resolveValidation(validated))
     .catch(() => false);
 };
+
+exports.getEmailFromToken = getEmailFromToken;
