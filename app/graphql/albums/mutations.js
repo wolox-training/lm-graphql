@@ -3,7 +3,10 @@ const { gql } = require('apollo-server'),
 
 module.exports = {
   mutations: {
-    buyAlbum: (_, { albumToBuy }) => createPurchase(albumToBuy.albumId, 1).then(albumId => album(albumId))
+    buyAlbum: (_, { albumToBuy }, context) => {
+      console.log(context);
+      return createPurchase(albumToBuy.albumId, 1).then(albumId => album(albumId));
+    }
   },
 
   schema: gql`
