@@ -1,7 +1,7 @@
 const { factory } = require('factory-girl'),
   faker = require('faker'),
   models = require('../../app/models'),
-  alphanumericRegex = /^[0-9a-zA-Z]+$/,
+  { alphanumericRegex } = require('../../app/helpers/constants'),
   { user: User } = models;
 
 factory.define('user', User, {

@@ -8,7 +8,8 @@ const DEFAULT_ERROR = 500,
   DB_ERROR = 503,
   VALIDATION_ERROR = 401,
   TOKEN_ERROR = 500,
-  PERMISSION_ERROR = 401;
+  PERMISSION_ERROR = 401,
+  HASH_ERROR = 500;
 
 exports.defaultError = message => createError(message, DEFAULT_ERROR);
 exports.badRequest = message => createError(message, BAD_REQUEST);
@@ -17,3 +18,4 @@ exports.dbError = message => createError(message, DB_ERROR);
 exports.validationError = message => createError(message, VALIDATION_ERROR);
 exports.tokenError = message => createError(message, TOKEN_ERROR);
 exports.permissionError = message => createError(message, PERMISSION_ERROR);
+exports.hashError = message => createError(message, HASH_ERROR);

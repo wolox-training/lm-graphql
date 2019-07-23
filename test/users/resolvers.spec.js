@@ -1,5 +1,6 @@
 const userFactory = require('../factories/user'),
-  { mutations } = require('../../app/graphql/users/mutations');
+  { mutations } = require('../../app/graphql/users/mutations'),
+  validationErrorStatus = 401;
 
 describe('users', () => {
   describe('resolvers', () => {
@@ -18,8 +19,9 @@ describe('users', () => {
       });
 
       it('should fail to create an user with malformed parameters', () =>
-        mutations.createUser({}, { user: { a: 'b' } }).catch(err => {
-          expect(err);
+        mutations.createUser({}, { user: { a: 'b' } }).catch(error => {
+          expect(error);
+          expect(error.extensions.code).toBe(validationErrorStatus);
         }));
     });
   });

@@ -1,15 +1,10 @@
 const { createTestClient } = require('apollo-server-testing'),
   { ApolloServer } = require('apollo-server'),
-  schema = require('../app/graphql'),
-  { validateToken } = require('../app/helpers/token');
+  schema = require('../app/graphql');
 
 const { query: _query, mutate } = createTestClient(
   new ApolloServer({
-    schema,
-    context: ({ req }) => {
-      const token = req.headers.token || '';
-      return validateToken(token).then(validated => ({ tokenValidated: validated, token }));
-    }
+    schema
   })
 );
 

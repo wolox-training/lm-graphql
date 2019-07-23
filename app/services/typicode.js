@@ -1,6 +1,6 @@
 const request = require('request-promise'),
   logger = require('../logger'),
-  typicodePath = 'https://jsonplaceholder.typicode.com',
+  { apiUrl } = require('../../config').common.albumsApi,
   { apiError } = require('../errors');
 
 const options = endpoint => ({
@@ -11,14 +11,14 @@ const options = endpoint => ({
 
 exports.requestAlbumPhotos = albumId => {
   logger.info(`Requesting album -with id ${albumId}- photos to jsonplaceholder API`);
-  return request(options(`${typicodePath}/photos?albumId=${albumId}`)).catch(error => {
+  return request(options(`${apiUrl}/photos?albumId=${albumId}`)).catch(error => {
     throw apiError(error.message);
   });
 };
 
 exports.getAlbumById = albumId => {
   logger.info(`Requesting album with id ${albumId}`);
-  return request(options(`${typicodePath}/albums/${albumId}`)).catch(error => {
+  return request(options(`${apiUrl}/albums/${albumId}`)).catch(error => {
     throw apiError(error.message);
   });
 };
@@ -26,14 +26,14 @@ exports.getAlbumById = albumId => {
 exports.getAlbums = () => {
   logger.info('Requesting albums');
 
-  return request(options(`${typicodePath}/albums`)).catch(error => {
+  return request(options(`${apiUrl}/albums`)).catch(error => {
     throw apiError(error.message);
   });
 };
 
 exports.getAlbumsFiltered = filterBy => {
   logger.info(`Requesting albums with title = ${filterBy}`);
-  return request(options(`${typicodePath}/albums?title=${filterBy.split(' ').join('%20')}`)).catch(error => {
+  return request(options(`${apiUrl}/albums?title=${filterBy.split(' ').join('%20')}`)).catch(error => {
     throw apiError(error.message);
   });
 };

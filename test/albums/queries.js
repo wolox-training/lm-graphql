@@ -56,10 +56,12 @@ describe('albums', () => {
       it('should get albums with photos properly', () => {
         mocks.albumsListMock(albumTitle);
         return query(albums(0, 3, 'id')).then(res => {
-          expect(res.data.albums.length).toBe(albumsAmount);
-          for (let i = 0; i < 2; i++) {
-            testAlbumProperties(res.data.albums[i], albumTitle, i + 1);
-          }
+          let count = 1;
+          expect(res.data.albums.length).toBe(2);
+          res.data.albums.forEach(oneAlbum => {
+            testAlbumProperties(oneAlbum, albumTitle, count);
+            count++;
+          });
         });
       });
 
@@ -83,44 +85,41 @@ describe('albums', () => {
 
     describe('Requests with missing or non-existent parameters', () => {
       beforeEach(() => {
-        mocks.albumsListMock('albumTitle');
-        mocks.albumsPhotosListMock(1, 'albumTitle');
-        mocks.albumsPhotosListMock(2, 'albumTitle');
+        mocks.albumsListMock(albumTitle);
+        mocks.albumsPhotosListMock(albumId1, albumTitle);
+        mocks.albumsPhotosListMock(albumId2, albumTitle);
       });
+
+      it.each([
+        { offset: null, limit: 3, orderBy: 'id', filterBy: 'title' },
+        { offset: 0, limit: null, orderBy: 'id', filterBy: 'title' }
+      ])('request albums with missing parameters', params =>
+        query(albums(params.offset, params.limit, params.orderBy, params.filterBy)).then(res =>
+          testErrorResponse(res, 'GRAPHQL_VALIDATION_FAILED')
+        )
+      );
 
       it('request album without id', () =>
         query(album()).then(res => testErrorResponse(res, 'GRAPHQL_VALIDATION_FAILED')));
-
-      it('request albums without offset', () =>
-        query(albums(null, 3, 'id', 'title')).then(res =>
-          testErrorResponse(res, 'GRAPHQL_VALIDATION_FAILED')
-        ));
-
-      it('request albums without limit', () =>
-        query(albums(0, null, 'id', 'title')).then(res =>
-          testErrorResponse(res, 'GRAPHQL_VALIDATION_FAILED')
-        ));
-
-      it('request albums without orderBy', () =>
-        query(albums(0, 3)).then(res => {
-          expect(res.data.albums.length).toBe(2);
-          for (let i = 0; i < 2; i++) {
-            testAlbumProperties(res.data.albums[i], albumTitle, i + 1);
-          }
-        }));
 
       it('request non-existent album', () => {
         mocks.albumMockError(60000);
         return query(album(60000)).then(res => testErrorResponse(res, apiErrorStatusCode));
       });
 
-      it('request albums without filterBy', () =>
-        query(albums(0, 3, 'id')).then(res => {
+      it.each([
+        { offset: 0, limit: 3, orderBy: null, filterBy: null },
+        { offset: 0, limit: 3, orderBy: 3, filterBy: null }
+      ])('Request albums without oderBy or filterBy', () =>
+        query(albums(0, 3)).then(res => {
+          let count = 1;
           expect(res.data.albums.length).toBe(2);
-          for (let i = 0; i < 2; i++) {
-            testAlbumProperties(res.data.albums[i], albumTitle, i + 1);
-          }
-        }));
+          res.data.albums.forEach(oneAlbum => {
+            testAlbumProperties(oneAlbum, albumTitle, count);
+            count++;
+          });
+        })
+      );
     });
   });
 });
