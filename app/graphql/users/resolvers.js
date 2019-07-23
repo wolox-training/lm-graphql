@@ -26,13 +26,11 @@ exports.createUser = user =>
 exports.getUser = user => User.getOne(user).then(foundUser => foundUser);
 
 exports.getUsers = () =>
-  User.getAll()
-    .then(foundUsers =>
-      foundUsers.map(foundUser => ({
-        ...foundUser.dataValues
-      }))
-    )
-    .then(users => users);
+  User.getAll().then(foundUsers =>
+    foundUsers.map(foundUser => ({
+      ...foundUser.dataValues
+    }))
+  );
 
 exports.getName = user => `${user.firstName} ${user.lastName}`;
 
