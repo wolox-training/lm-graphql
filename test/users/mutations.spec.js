@@ -8,8 +8,8 @@ const { mutate } = require('../server.spec'),
   correctEmail = 'useremail@wolox.com.ar',
   correctFirstName = 'fn',
   correctLastName = 'ln',
-  gmailEmail = 'email@gmail.com',
   correctPassword = 'password',
+  gmailEmail = 'email@gmail.com',
   shortPassword = 'pass',
   passwordWithDots = 'p.a.s.s.w.o.r.d';
 

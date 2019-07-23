@@ -11,4 +11,7 @@ module.exports = gql`
     email: String!
     password: String!
   }
+  input AlbumInput {
+    albumId: Int!
+  }
 `;
