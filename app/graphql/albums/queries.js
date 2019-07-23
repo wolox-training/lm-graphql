@@ -4,7 +4,10 @@ const { gql } = require('apollo-server'),
 module.exports = {
   queries: {
     album: (_, params) => album(params.id),
-    albums: (_, params) => albums(params.offset, params.limit, params.orderBy, params.filterBy)
+    albums: (_, params) =>
+      new Promise(resolve => setTimeout(resolve, 5000)).then(() =>
+        albums(params.offset, params.limit, params.orderBy, params.filterBy)
+      )
   },
   schema: gql`
     extend type Query {
