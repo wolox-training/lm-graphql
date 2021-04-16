@@ -62,7 +62,7 @@
     "express-wolox-logger": "0.0.1",
     "graphql": "^14.2.1",
     "graphql-tools": "^4.0.4",
-    "jsrsasign": "^8.0.12",
+    "jsrsasign": "^10.2.0",
     "jwt-simple": "^0.5.1",
     "nock": "^10.0.6",
     "pg": "^7.4.1",
